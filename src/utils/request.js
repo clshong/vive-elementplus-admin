@@ -1,96 +1,74 @@
-import axios from 'axios'
-import { useStaffStore } from '@/store/modules/staff.js'
-import { ElMessage } from 'element-plus'
-import {
-  AXIOS_TIMEOUT,
-} from '@/config'
+import axios from 'axios';
+import { useStaffStore } from '@/store/modules/staff';
+import { getToken } from '@/utils/auth';
+import { ElNotification } from 'element-plus';
 
-import { switchServerUrl } from "@/utils/index";
+// create an axios instance
+const service = axios.create({
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  timeout: 20000 // request timeout
+});
 
-/**
- * axios请求拦截器
- * @param {object} config axios请求配置对象
- * @return {object} 请求成功或失败时返回的配置对象或者promise error对象
- **/
-axios.interceptors.request.use(config => {
-  return config
-}, error => {
-  return Promise.reject(error)
-})
+service.interceptors.request.use(
+  config => {
+    const staffStore = useStaffStore();
+    config.baseURL = import.meta.env['VITE_APP_BASE_PREFIX'];
 
-/**
- * axios 响应拦截器
- * @param {object} response 从服务端响应的数据对象或者error对象
- * @return {object} 响应成功或失败时返回的响应对象或者promise error对象
- **/
-axios.interceptors.response.use(response => {
-  return response
-}, error => {
-  return Promise.reject(error)
-})
-
-export default function http(options) {
-  //获取不同环境的请求域名
-  let server_url = switchServerUrl()
-
-  let opt = {},
-    method = options.method || "post",
-    url = options.url,
-    data = options.data || {};
-  if (!options.url) {
-    console.error("url参数缺失")
-    return;
-  }
-
-  const StaffStore = useStaffStore()
-  if (StaffStore.token) {
-    data.sys_token = StaffStore.token
-  }
-  if (method == "get") {
-    opt = {
-      method: method,
-      baseURL: "",
-      url: url.indexOf('//') > -1 ? url : (server_url + url),
-      params: data,
-      timeout: AXIOS_TIMEOUT,
+    if (staffStore.token) {
+      config.headers['x-authorization'] = 'Bearer ' + getToken();
     }
-  } else if (method == "post") {
-    opt = {
-      method: method,
-      baseURL: "",
-      url: url.indexOf('//') > -1 ? url : (server_url + url),
-      data: data, //qs.stringify(data)
-      timeout: AXIOS_TIMEOUT
+    return config;
+  },
+  error => {
+    console.log(error); // for debug
+    return Promise.reject(error);
+  }
+);
+
+service.interceptors.response.use(
+  response => {
+    const staffStore = useStaffStore();
+    const res = response.data;
+    if (res.code === 401) {
+      ElNotification.error({
+        title: '错误',
+        message: res.msg
+      });
+
+      staffStore.logOut();
+      return Promise.reject(res);
+    } else if (res.code !== 200) {
+      ElNotification.error({
+        title: '错误',
+        message: res.msg || '网络错误，请稍后重试'
+      });
+      return Promise.reject(res);
+    } else {
+      return res;
+    }
+  },
+  error => {
+    console.log(error); // for debug
+    const errContent = error.response;
+    const staffStore = useStaffStore();
+    if (errContent?.status === 401) {
+      ElNotification.error({
+        title: '错误',
+        message: errContent.data.msg
+      });
+
+      staffStore.logOut();
+      return Promise.reject(error);
+    } else {
+      ElNotification.error({
+        title: '错误',
+        message: errContent?.data?.msg || '网络错误，请稍后重试'
+      });
+      return Promise.reject(error);
     }
   }
-  // if (SERVER_TYPE == 3) {
-  //   opt.url = opt.url + '/version/' + VERSION
-  // } else {
-  //   opt.url = opt.url + '/version/' + MODEL_TEST_VERSION
-  // }
+);
 
-  return new Promise((resolve, reject) => {
-    axios(opt).then(res => {
-      if (res && (res.status === 200 || res.status === 304 || res.status === 400)) {
-        var data = res.data;
-        if (data.status && data.status.error_code == 0) {
-          resolve(data)
-        } else if (data.status && (data.status.error_code == 101 || data.status.error_code == 102 || data.status.error_msg == '您还没有登录')) { //101请获取权限 102登录失效
-          ElMessage.error(data.status.error_msg) // 提示错误信息
-          // 登出操作
-          store.dispatch('user/logout')
-        } else {
-          ElMessage.error(data.status.error_msg || "网络异常，请稍后重试！") // 提示错误信息
-          reject(data);
-        }
-      } else {
-        ElMessage.error(res || "网络异常，请稍后重试！") // 提示错误信息
-        reject("网络异常，请稍后重试")
-      }
-    }, err => {
-      ElMessage.error(err) // 提示错误信息
-      reject(err)
-    })
-  })
-
-}
+export default service;

@@ -41,7 +41,7 @@ provide('isCollapse', isCollapse);
 .sidebar {
   position: relative;
   z-index: 2;
-  background: #fff;
+  background: #24b9eb;
 }
 .sidebar-container {
   min-width: $base-menu-width;

@@ -4,13 +4,11 @@ import App from './App.vue';
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 
-import router from './router';
+import router from './router/index';
 
 import store from './store/index';
 
-import '@/styles/index.scss'
-
-
+import '@/styles/index.scss';
 
 const app = createApp(App);
 

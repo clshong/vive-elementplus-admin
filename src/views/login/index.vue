@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form ref="loginFromRef" class="login-form" :model="loginForm" :rules="loginRules">
       <div class="title-container">
-        <h3 class="title">综合服务平台</h3>
+        <h3 class="title">小趴菜后台浪浪</h3>
       </div>
 
       <el-form-item prop="username" style="display: flex; flex-direction: row">
@@ -143,14 +143,14 @@ const handleLogin = () => {
     }
     loading.value = true;
     try {
-      const result = StaffStore.userLogin(loginForm.value);
-      if (result) {
-        loading.value = false;
-        // TODO: 登录后操作
-        debugger;
-        router.push('/');
-      }
+      StaffStore.userLogin(loginForm.value).then(res => {
+        if (res) {
+          loading.value = false;
+          router.push('/');
+        }
+      });
     } catch (error) {
+      console.log(error);
       getCodeImg();
       loading.value = false;
     }
@@ -161,11 +161,11 @@ const handleLogin = () => {
  */
 const getCodeImg = () => {
   getCode({})
-    .then(data => {
-      let obj = data.bizobj;
+    .then(res => {
+      let _obj = res.data;
 
-      loginForm.value.code_key = obj.code_key;
-      code_net.value = obj.code;
+      loginForm.value.code_key = _obj.code_key;
+      code_net.value = _obj.code;
     })
     .catch(err => {});
 };

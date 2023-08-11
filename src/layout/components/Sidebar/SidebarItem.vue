@@ -1,27 +1,27 @@
 <template>
-  <!-- 支持渲染多级 menu 菜单 -->
-  <el-sub-menu v-if="route.children.length > 0" :index="route.path">
+  <el-sub-menu
+    v-if="itemData.children && (itemData.meta.alwaysShow || itemData?.children?.length > 1)"
+    :index="itemData._id"
+  >
     <template #title>
-      <el-icon>
-        <component class="menu-icon" :is="itemData.meta.icon"></component>
-      </el-icon>
-      <span>{{ route.meta.title }}</span>
+      <el-icon><svg-icon class="menu-icon" :name="itemData.meta.icon"></svg-icon></el-icon>
+      <span>{{ itemData.meta.title }}</span>
     </template>
-    <!-- 循环渲染 -->
-    <SidebarItem v-for="item in route.children" :key="item.path" :route="item"></SidebarItem>
+    <sidebar-item
+      v-for="item in itemData.children"
+      :key="item._id"
+      :item-data="item"
+    ></sidebar-item>
   </el-sub-menu>
-  <!-- 渲染 item 项 -->
-  <template v-else>
-    <el-menu-item v-if="!route.hidden" :index="route.path">
-      <el-icon>
-        <component class="menu-icon" :is="itemData.meta.icon"></component>
-      </el-icon>
-      <span>{{ route.meta.title }}</span>
-    </el-menu-item>
-  </template>
+  <sidebar-item v-else-if="itemData.children" :item-data="itemData?.children[0]"></sidebar-item>
+  <el-menu-item v-else :index="itemData.path">
+    <el-icon><svg-icon class="menu-icon" :name="itemData.meta.icon"></svg-icon></el-icon>
+    <span>{{ itemData.meta.title }}</span>
+  </el-menu-item>
+  <!-- </div> -->
 </template>
 
-<script setup name="SidebarItem">
+<script setup>
 defineProps(['itemData']);
 </script>
 <style scoped lang="scss">

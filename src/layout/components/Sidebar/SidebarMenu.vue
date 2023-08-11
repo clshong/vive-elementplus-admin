@@ -1,35 +1,61 @@
 <template>
-  <!-- 一级 menu 菜单 -->
   <el-menu
-    :collapse="!collapse"
-    :default-active="activeMenu"
-    :uniqueOpened="true"
-    text-color="#fff"
-    active-text-color="#ccc"
+    :default-openeds="defaultOpeneds"
+    :default-active="$route.fullPath"
+    class="el-menu-vertical-demo"
     :unique-opened="true"
+    :active-text-color="themeColor"
     router
+    :collapse="isCollapse"
   >
-    <sidebar-item v-for="item in routes" :key="item.path" :route="item"></sidebar-item>
+    <template v-for="item in menus" :key="item._id">
+      <sidebar-item :item-data="item" v-if="!item?.meta?.hidden"></sidebar-item>
+    </template>
   </el-menu>
 </template>
+
 <script setup>
-import { computed, ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { filterRouters, generateMenus } from '@/utils/route';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { usePermissionStore } from '@/store/modules/permission.js';
 import SidebarItem from './SidebarItem.vue';
+import { reactive, inject } from 'vue';
+import { compareVersion } from '@/utils/util.js';
 
-const collapse = ref(false);
-
+const permissionStore = usePermissionStore();
+const menus = permissionStore.routes;
 const router = useRouter();
-const routes = computed(() => {
-  const filterRoutes = filterRouters(router.getRoutes());
-  return generateMenus(filterRoutes);
+const isCollapse = inject('isCollapse');
+
+const themeColor = ref('');
+onMounted(() => {
+  themeColor.value = document.documentElement.style.getPropertyValue('--color-primary');
 });
 
-// 计算高亮 menu 的方法
-const route = useRoute();
-const activeMenu = computed(() => {
-  const { path } = route;
-  return path;
-});
+// 默认展开
+const defaultOpeneds = reactive([]);
+const findActive = menus => {
+  menus.forEach(item => {
+    if (item.children && item.children[0]) {
+      findActive(item.children);
+    } else {
+      if (item.path === router.currentRoute.value.path) {
+        defaultOpeneds.push(item.parentId);
+      }
+    }
+  });
+};
+findActive(menus);
+
+// 菜单排序
+const sortMenus = menus => {
+  menus.sort((a, b) => compareVersion(b.meta.sort || '0', a.meta.sort || '0'));
+  menus.forEach(item => {
+    if (item.children) {
+      sortMenus(item.children);
+    }
+  });
+};
+sortMenus(menus);
 </script>
+<style scoped></style>

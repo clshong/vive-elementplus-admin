@@ -1,74 +1,31 @@
-import axios from '@/utils/request'
-
-
+import axios from '@/utils/request';
 
 /**
  * 登录
  */
-export function login(params) {
+export function login(data) {
   return axios({
     url: '/Index/login',
     method: 'post',
-    data: params
-  })
+    data
+  });
 }
 /**
  * 获取图形验证码
  */
-export function getCode(params) {
+export function getCode(data) {
   return axios({
     url: '/Index/getCaptchaCode',
     method: 'post',
-    data: params
-  })
+    data
+  });
 }
 
-/**
- * 权限列表（侧边栏权限和按钮权限）
- * @param params
- */
-export function getPermission(params) {
+// 获取菜单
+export function getRolePermission(data) {
   return axios({
-    url: '/Index/getPermission',
+    url: '/Index/menuList',
     method: 'post',
-    data: params
-  })
+    data
+  });
 }
-
-/**
- * 账号列表
- * @param params
- */
-export function getAdmintorList(params) {
-  return axios({
-    url: '/adminAuth/adminList',
-    method: 'post',
-    data: params
-  })
-}
-
-/**
- * 角色列表
- * @param params
- */
-export function getRoleList(params) {
-  return axios({
-    url: '/adminAuth/getRoleList',
-    method: 'post',
-    data: params
-  })
-}
-
-
-
-//上传图片
-export function publicUploadFile(params) {
-  return axios({
-    url: '/public/uploadFile',
-    method: 'post',
-    data: params
-  })
-}
-
-
-
