@@ -8,6 +8,10 @@ import router from './router';
 
 import store from './store/index';
 
+import '@/styles/index.scss'
+
+
+
 const app = createApp(App);
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

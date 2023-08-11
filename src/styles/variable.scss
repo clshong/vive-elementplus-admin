@@ -9,7 +9,7 @@ $base-menu-background: #4571cc;
 // 顶部导航栏高度
 $base-tabbar-height: 50px;
 // 顶部标签栏高度
-$base-tagbar-height:30px;
+$base-tagbar-height: 30px;
 // 左侧菜单logo高度
 $base-menu-logo-height: 50px;
 // 左侧菜单logo字体大小
@@ -22,23 +22,3 @@ $base-bgcolor: #262f3e;
 $base-border-color: #e8e8e8;
 
 $bg-color-page: #f0f0f0;
-
-// 循环1
-$sizes: 20px, 22px, 24px, 30px;
-@each $size in $sizes {
-  .font-#{$size} {
-    font-size: $size;
-  }
-}
-// 循环2
-$themes: (
-  'blue': blue,
-  'red': red,
-  'green': green
-);
-@each $key, $val in $themes {
-  .sect-#{$key} {
-    background-color: $val;
-    color: #fff;
-  }
-}

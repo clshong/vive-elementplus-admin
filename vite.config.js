@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
 import AutoImport from 'unplugin-auto-import/vite';
@@ -7,15 +7,25 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 
 import vueSetupExtend from 'vite-plugin-vue-setup-extend';
 
+import { viteMockServe } from 'vite-plugin-mock'
+
 import path from 'path';
 
-export default ({ mode }) => {
-  return defineConfig({
+export default defineConfig(({ mode }) => {
+  const config = loadEnv(mode, './')
+  return {
     base: './',
     server: {
       port: '8088',
       host: true,
-      proxy: {}
+      proxy: {
+        [config.VITE_APP_BASE_PREFIX]: {
+          target: config.VITE_APP_BASE_API,
+          changeOrigin: true,
+          rewrite: (path) =>
+            path.replace(new RegExp(`^${config.VITE_APP_BASE_PREFIX}`), ''),
+        },
+      },
     },
     // 插件
     plugins: [
@@ -25,7 +35,14 @@ export default ({ mode }) => {
         resolvers: [ElementPlusResolver()]
       }),
       Components({
-        resolvers: []
+        resolvers: [ElementPlusResolver()]
+      }),
+      viteMockServe({
+        supportTs: false,
+        logger: true,
+        enable: false,
+        mockPath: "./src/mock/",
+
       })
     ],
 
@@ -40,9 +57,9 @@ export default ({ mode }) => {
       preprocessorOptions: {
         scss: {
           javascriptEnabled: true,
-          additionalData: '@import "./src/styles/variable.scss";'
+          additionalData: `@import "./src/styles/variable.scss";`
         }
       }
     }
-  });
-};
+  };
+});

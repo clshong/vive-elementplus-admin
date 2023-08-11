@@ -6,7 +6,6 @@
 
 <script setup>
 import { ElConfigProvider } from 'element-plus';
-
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 const locales = zhCn;
 </script>
