@@ -10,9 +10,15 @@
           ref="tagItem"
         >
           {{ item.meta.title }}
-          <el-icon v-if="!item.meta.affix" @click.prevent="closeTag(item)">
-            <component :is="Close"></component>
-          </el-icon>
+          <el-button
+            class="close-icon"
+            type="text"
+            style="border: 0; padding: 0"
+            size="small"
+            v-if="item.meta.affix"
+            icon="Close"
+            @click.prevent="closeTag(item)"
+          />
         </router-link>
       </div>
     </el-scrollbar>
@@ -115,30 +121,28 @@ const closeTag = tag => {
 <style lang="scss" scoped>
 .tag-wrap {
   // height: 40px;
-  background: var(#121212);
-  // box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   display: flex;
   align-items: center;
 }
 .tag-list {
   display: flex;
-  padding: 10px 20px;
+  padding: 5px;
   // overflow-x: auto;
   .tag-item {
-    border: 1px solid var(#2e2e2e);
+    border: 1px solid #ddd;
+    padding: 2px;
     font-size: 14px;
-    padding: 3px 10px;
     margin-right: 10px;
-    color: #cfd3dc;
+    color: #000;
     border-radius: 4px;
     display: flex;
     align-items: center;
     cursor: pointer;
     flex-shrink: 0;
     &.checked {
-      color: #fff;
-      background: #0497e6;
-      border: none;
+      color: #0497e6;
     }
     .close-icon {
       margin-left: 5px;

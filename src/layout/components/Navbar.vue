@@ -2,8 +2,8 @@
   <div class="navbar-wrap">
     <div class="navbar-lf">
       <div class="lf-btn">
-        <el-icon @click="ChnageIcon">
-          <component :is="fold ? 'Fold' : 'Expand'"></component>
+        <el-icon @click="sidebar.handleCollapse">
+          <component :is="sidebar.collapse ? 'Fold' : 'Expand'"></component>
         </el-icon>
       </div>
       <el-breadcrumb separator-icon="ArrowRight">
@@ -21,7 +21,7 @@
       <div class="rg-btn">
         <el-button size="small" icon="Refresh" circle @click="updateRefsh" />
         <el-button size="small" icon="FullScreen" circle @click="fullScreen" />
-        <el-button size="small" icon="Setting" circle />
+        <el-button size="small" icon="Bell" circle />
       </div>
       <img src="@/assets/vue.svg" style="width: 24px; height: 24px; margin: 0 10px" />
       <el-dropdown trigger="click">
@@ -44,16 +44,11 @@
 <script setup>
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useSidebarStore } from '@/store/modules/sidebar.js';
+const sidebar = useSidebarStore();
 
-const fold = ref(false);
 const route = useRoute();
-
 const rersh = ref(false);
-
-// 控制是否折叠
-const ChnageIcon = () => {
-  fold.value = !fold.value;
-};
 
 //刷新
 const updateRefsh = () => {

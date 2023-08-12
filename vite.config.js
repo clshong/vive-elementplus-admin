@@ -7,25 +7,24 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 
 import vueSetupExtend from 'vite-plugin-vue-setup-extend';
 
-import { viteMockServe } from 'vite-plugin-mock'
+import { viteMockServe } from 'vite-plugin-mock';
 
 import path from 'path';
 
 export default defineConfig(({ mode }) => {
-  const config = loadEnv(mode, './')
+  const config = loadEnv(mode, './');
   return {
     base: './',
     server: {
       port: '8088',
       host: true,
       proxy: {
-        [config.VITE_APP_BASE_PREFIX]: {
+        [config.VITE_BASE_URL]: {
           target: config.VITE_APP_BASE_API,
           changeOrigin: true,
-          rewrite: (path) =>
-            path.replace(new RegExp(`^${config.VITE_APP_BASE_PREFIX}`), ''),
-        },
-      },
+          rewrite: path => path.replace(new RegExp(`^${config.VITE_BASE_URL}`), '')
+        }
+      }
     },
     // 插件
     plugins: [
@@ -41,8 +40,7 @@ export default defineConfig(({ mode }) => {
         supportTs: false,
         logger: true,
         enable: false,
-        mockPath: "./src/mock/",
-
+        mockPath: './src/mock/'
       })
     ],
 

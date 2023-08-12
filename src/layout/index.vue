@@ -4,9 +4,9 @@
     <Sidebar
       id="guide-sidebar"
       class="sidebar"
-      :class="{ 'sidebar-container': !isCollapse }"
+      :class="{ 'sidebar-container': !sidebar.collapse }"
     ></Sidebar>
-    <div class="main-container">
+    <div class="main-container" :class="{ 'sidebar-container': !isCollapse }">
       <div class="fixed-header">
         <!-- 顶部 navbar -->
         <Navbar></Navbar>
@@ -20,14 +20,13 @@
 </template>
 
 <script setup>
-import { ref, provide } from 'vue';
 import Navbar from './components/Navbar.vue';
 import Sidebar from './components/Sidebar/index.vue';
 import TagsView from './components/TagsView/index.vue';
 import AppMain from './components/AppMain.vue';
 
-const isCollapse = ref(false);
-provide('isCollapse', isCollapse);
+import { useSidebarStore } from '@/store/modules/sidebar.js';
+const sidebar = useSidebarStore();
 </script>
 <style lang="scss">
 .app-wrapper {
@@ -41,7 +40,7 @@ provide('isCollapse', isCollapse);
 .sidebar {
   position: relative;
   z-index: 2;
-  background: #24b9eb;
+  // background: #24b9eb;
 }
 .sidebar-container {
   min-width: $base-menu-width;
@@ -51,13 +50,5 @@ provide('isCollapse', isCollapse);
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-.collapse-btn {
-  cursor: pointer;
-  margin-left: 16px;
-  transition: all 0.3s;
-  &.row {
-    transform: rotate(90deg);
-  }
 }
 </style>

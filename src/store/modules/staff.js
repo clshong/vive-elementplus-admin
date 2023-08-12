@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { login } from '@/api/api';
-import { setItem, getItem, removeAllItem } from '@/utils/storage';
+import { setItem, getItem } from '@/utils/storage';
 import { TOKEN, USERINFO } from '@/config';
 
 export const useStaffStore = defineStore(
