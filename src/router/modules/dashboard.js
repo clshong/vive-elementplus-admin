@@ -7,7 +7,7 @@ const routes = [
     component: Layout,
     redirect: '/dashboard/workbench',
     meta: {
-      title: 'dashboard',
+      title: '工作台',
       icon: 'House',
       order: 1
     },
@@ -17,8 +17,9 @@ const routes = [
         path: 'workbench',
         name: 'workbench',
         meta: {
-          title: 'workbench',
-          affix: false
+          title: '欢迎页',
+          affix: false,
+          priex: true
         },
         component: () => import('@/views/dashboard/index.vue')
       }

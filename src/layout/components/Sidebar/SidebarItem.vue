@@ -4,11 +4,9 @@
     v-if="filteredItems && filteredItems.length > 0"
   >
     <template #title>
-      <MoIcon
-        :icon-name="item.meta.icon"
-        v-if="level === 0 && item.meta.icon"
-        class="ml-1 mr-1 text-lg"
-      />
+      <el-icon v-if="level === 0 && item.meta.icon" class="ml-1 mr-1 text-lg">
+        <component :is="item.meta.icon"></component>
+      </el-icon>
 
       <span>{{ item.meta.title }}</span>
     </template>
@@ -20,7 +18,9 @@
     />
   </el-sub-menu>
   <el-menu-item :index="getPath(parentPath, item.path)" v-else>
-    <MoIcon :icon-name="item.meta.icon" v-if="level === 0" class="ml-1 mr-1 text-lg" />
+    <el-icon v-if="level === 0" class="ml-1 mr-1 text-lg">
+      <component :is="item.meta.icon"></component>
+    </el-icon>
     <template #title>{{ item.meta.title }}</template>
   </el-menu-item>
 </template>

@@ -63,7 +63,7 @@ const initTags = () => {
     .getRoutes()
     .sort((a, b) => compareVersion(b.meta.sort || '0', a.meta.sort || '0'));
   routes.forEach(item => {
-    if (item.meta.affix) {
+    if (item.meta.priex) {
       affixTags.value.push(item);
       tagsViewStore.addView(item);
     }
@@ -131,17 +131,16 @@ const closeTag = tag => {
   padding: 5px;
   // overflow-x: auto;
   .tag-item {
-    border: 1px solid #ddd;
     padding: 2px;
     font-size: 14px;
     margin-right: 10px;
     color: #000;
-    border-radius: 4px;
     display: flex;
     align-items: center;
     cursor: pointer;
     flex-shrink: 0;
     &.checked {
+      border-bottom: 2px solid #0497e6;
       color: #0497e6;
     }
     .close-icon {

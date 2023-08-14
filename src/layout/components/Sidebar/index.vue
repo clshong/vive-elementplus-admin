@@ -8,6 +8,25 @@
         :collapse="sidebar.collapse"
         router
       >
+        <h2
+          style="
+            width: auto;
+            overflow: hidden;
+            border-bottom: 1px solid #ddd;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            white-space: nowrap;
+          "
+        >
+          <img
+            style="display: block; width: 50px height: 30px;"
+            src="@/assets/avatar-ea67286d.gif"
+            alt=""
+          />
+          <span v-if="!sidebar.collapse">vite-admin</span>
+        </h2>
         <SidebarItem :item="item" v-for="item in items" :key="item.name" />
       </el-menu>
     </el-scrollbar>

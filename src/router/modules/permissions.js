@@ -6,8 +6,8 @@ const routes = {
   component: Layout,
   redirect: '/permission/index',
   meta: {
-    title: 'permission',
-    icon: 'ep-lock',
+    title: '权限管理',
+    icon: 'House',
     order: 99
   },
   children: [
@@ -17,7 +17,7 @@ const routes = {
       component: () =>
         import(/* webpackChunkName: "permission" */ '@/views/permissions-page/accountDetail.vue'),
       meta: {
-        title: 'permission',
+        title: '按钮权限',
         affix: true
       }
     }
